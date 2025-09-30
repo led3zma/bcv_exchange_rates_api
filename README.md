@@ -1,1 +1,3 @@
 To use `update_historic.py` script, copy a historic file from [BCV page](https://www.bcv.org.ve/estadisticas/tipo-cambio-de-referencia-smc) into `input/historic/` and make sure the filename reference in code matches correctly (TODO: read every file from path automatically)
+
+Read more [here](docs/parsing_historic.md)
