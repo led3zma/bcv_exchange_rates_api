@@ -27,6 +27,20 @@ def get_value_date(filename: pathlib.Path, sheet_name: str):
     return value_date
 
 
+def get_quarter_format() -> str:
+    """Aims to return a string that matches the yearly part of the downloaded historic file corresponding to some quarter at some year
+    Each quarter identified by a-b-c-d respectively. Example: 2025 1st quarter: 2a25
+    """
+
+    # Taking advantage of integer division to get 1-4
+    now = datetime.now()
+    quarter_letter = {1: "a", 2: "b", 3: "c", 4: "d"}
+    quarter = quarter_letter.get((now.month - 1) // 3 + 1)
+    year = str(now.year)
+    year = f"{year[:1]}{quarter}{year[2:]}"
+    return year
+
+
 def main():
     with engine.connect() as conn:
         conn.execute(
