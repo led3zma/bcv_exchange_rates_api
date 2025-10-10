@@ -42,7 +42,7 @@ def get_quarter_format() -> str:
     return year
 
 
-def download_files(file: str, url: str, dest: str):
+def download_files(file: str, url: str, dest: pathlib.Path):
     try:
         print(f"Attempting to download {file} at {url}")
         with httpx.stream("GET", url, verify=False) as response:
