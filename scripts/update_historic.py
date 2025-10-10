@@ -7,8 +7,9 @@ from datetime import datetime
 from sqlalchemy import text
 
 from app.core.db import engine
+from app.core.config import get_settings
 
-historic_path = "./input/historic/"
+settings = get_settings()
 
 
 def get_value_date(filename: pathlib.Path, sheet_name: str):
@@ -38,7 +39,7 @@ def main():
             )
         )
         conn.commit()
-    for filename in pathlib.Path(historic_path).iterdir():
+    for filename in pathlib.Path(settings.historic_path).iterdir():
         if filename.is_file() and filename.suffix == ".xls":
             excel = pd.read_excel(
                 filename,
