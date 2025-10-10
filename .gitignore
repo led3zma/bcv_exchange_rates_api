@@ -12,3 +12,4 @@ input/
 
 database.sqlite3
 .env
+.vscode
