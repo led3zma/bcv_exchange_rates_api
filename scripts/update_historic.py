@@ -1,3 +1,5 @@
+import os
+import pathlib
 import pandas as pd
 
 from datetime import datetime
@@ -6,12 +8,12 @@ from sqlalchemy import text
 
 from app.core.db import engine
 
-excel_path = "./input/historic/2_1_2c25_smc.xls"
+historic_path = "./input/historic/"
 
 
-def get_value_date(sheet_name: str):
+def get_value_date(filename: pathlib.Path, sheet_name: str):
     df = pd.read_excel(
-        excel_path,
+        filename,
         usecols="D",
         header=None,
         nrows=1,
@@ -36,32 +38,34 @@ def main():
             )
         )
         conn.commit()
-    excel = pd.read_excel(
-        excel_path,
-        usecols="B,G",
-        header=8,
-        index_col=0,
-        skiprows=[9],
-        nrows=21,
-        sheet_name=["26092025", "24092025"],
-    )
+    for filename in pathlib.Path(historic_path).iterdir():
+        if filename.is_file() and filename.suffix == ".xls":
+            excel = pd.read_excel(
+                filename,
+                usecols="B,G",
+                header=8,
+                index_col=0,
+                skiprows=[9],
+                nrows=21,
+                sheet_name=None,
+            )
 
-    insert_rates = []
-    for sheet_name, df in excel.items():
-        date = get_value_date(sheet_name=sheet_name)
-        value = df.loc["USD"].iloc[0]
-        print(date)
-        print(value)
-        insert_rates.append({"date": date, "value": value})
+            insert_rates = []
+            for sheet_name, df in excel.items():
+                date = get_value_date(filename=filename, sheet_name=sheet_name)
+                value = df.loc["USD"].iloc[0]
+                print(date)
+                print(value)
+                insert_rates.append({"date": date, "value": value})
 
-    with engine.connect() as conn:
-        conn.execute(
-            text(
-                """INSERT OR IGNORE INTO rate (value_date,rate) VALUES (:date,:value)"""
-            ),
-            insert_rates,
-        )
-        conn.commit()
+            with engine.connect() as conn:
+                conn.execute(
+                    text(
+                        """INSERT OR IGNORE INTO rate (value_date,rate) VALUES (:date,:value)"""
+                    ),
+                    insert_rates,
+                )
+                conn.commit()
 
 
 if __name__ == "__main__":
