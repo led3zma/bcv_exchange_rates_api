@@ -1,5 +1,6 @@
 import os
 import pathlib
+import httpx
 import pandas as pd
 
 from datetime import datetime
@@ -41,6 +42,22 @@ def get_quarter_format() -> str:
     return year
 
 
+def download_files(file: str, url: str, dest: str):
+    try:
+        print(f"Attempting to download {file} at {url}")
+        with httpx.stream("GET", url, verify=False) as response:
+            response.raise_for_status()
+            with open(dest, "wb") as downloaded_file:
+                for chunk in response.iter_bytes():
+                    downloaded_file.write(chunk)
+    except httpx.HTTPStatusError as e:
+        print(f"Error downloading file: {e}")
+        exit()
+    except Exception as e:
+        print(f"An error has ocurred: {e}")
+        exit()
+
+
 def main():
     with engine.connect() as conn:
         conn.execute(
@@ -53,7 +70,17 @@ def main():
             )
         )
         conn.commit()
-    for filename in pathlib.Path(settings.historic_path).iterdir():
+
+    target_filename = settings.historic_base_file_format.format(
+        date=get_quarter_format()
+    )
+    target_file_url = f"{settings.historic_download_url}{target_filename}"
+    historic_path = pathlib.Path(settings.historic_path)
+    file_destination = historic_path.joinpath(target_filename)
+
+    download_files(target_filename, target_file_url, file_destination)
+
+    for filename in historic_path.iterdir():
         if filename.is_file() and filename.suffix == ".xls":
             excel = pd.read_excel(
                 filename,

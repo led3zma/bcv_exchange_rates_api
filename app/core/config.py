@@ -8,6 +8,10 @@ class Settings(BaseSettings):
     )
 
     historic_path: str = "./input/historic/"
+    historic_download_url: str = (
+        "https://www.bcv.org.ve/sites/default/files/EstadisticasGeneral/"
+    )
+    historic_base_file_format: str = "2_1_{date}_smc.xls"
 
 
 @lru_cache
