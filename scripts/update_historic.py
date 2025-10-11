@@ -71,14 +71,14 @@ def main():
         )
         conn.commit()
 
-    target_filename = settings.historic_base_file_format.format(
-        date=get_quarter_format()
-    )
-    target_file_url = f"{settings.historic_download_url}{target_filename}"
     historic_path = pathlib.Path(settings.historic_path)
-    file_destination = historic_path.joinpath(target_filename)
-
-    download_files(target_filename, target_file_url, file_destination)
+    if settings.historic_file_download:
+        target_filename = settings.historic_base_file_format.format(
+            date=get_quarter_format()
+        )
+        target_file_url = f"{settings.historic_download_url}{target_filename}"
+        file_destination = historic_path.joinpath(target_filename)
+        download_files(target_filename, target_file_url, file_destination)
 
     for filename in historic_path.iterdir():
         if filename.is_file() and filename.suffix == ".xls":

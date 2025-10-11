@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     )
 
     historic_path: str = "./input/historic/"
+    historic_file_download: bool = False
     historic_download_url: str = (
         "https://www.bcv.org.ve/sites/default/files/EstadisticasGeneral/"
     )
