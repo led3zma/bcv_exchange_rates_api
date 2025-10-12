@@ -73,7 +73,7 @@ def main():
     historic_path = pathlib.Path(settings.historic_path)
     if settings.historic_file_download:
         target_filename = settings.historic_base_file_format.format(
-            date=get_quarter_format(date.now())
+            date=get_quarter_format(date.today())
         )
         target_file_url = f"{settings.historic_download_url}{target_filename}"
         file_destination = historic_path.joinpath(target_filename)
