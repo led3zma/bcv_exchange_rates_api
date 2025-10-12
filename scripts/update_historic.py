@@ -93,11 +93,11 @@ def main():
 
             insert_rates = []
             for sheet_name, df in excel.items():
-                date = get_value_date(filename=filename, sheet_name=sheet_name)
+                value_date = get_value_date(filename=filename, sheet_name=sheet_name)
                 value = df.loc["USD"].iloc[0]
-                print(date)
+                print(value_date)
                 print(value)
-                insert_rates.append({"date": date, "value": value})
+                insert_rates.append({"date": value_date, "value": value})
 
             with engine.connect() as conn:
                 conn.execute(
