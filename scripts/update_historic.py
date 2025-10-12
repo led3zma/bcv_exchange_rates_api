@@ -4,7 +4,7 @@ import httpx
 import pandas as pd
 
 from datetime import datetime, date
-
+from dateutil.relativedelta import relativedelta
 from sqlalchemy import text
 
 from app.core.db import engine
@@ -72,12 +72,19 @@ def main():
 
     historic_path = pathlib.Path(settings.historic_path)
     if settings.historic_file_download:
-        target_filename = settings.historic_base_file_format.format(
-            date=get_quarter_format(date.today())
+        target_date = (
+            settings.historic_download_from_date
+            if settings.historic_download_from_date
+            else date.today()
         )
-        target_file_url = f"{settings.historic_download_url}{target_filename}"
-        file_destination = historic_path.joinpath(target_filename)
-        download_files(target_filename, target_file_url, file_destination)
+        while target_date <= date.today():
+            target_filename = settings.historic_base_file_format.format(
+                date=get_quarter_format(target_date)
+            )
+            target_file_url = f"{settings.historic_download_url}{target_filename}"
+            file_destination = historic_path.joinpath(target_filename)
+            download_files(target_filename, target_file_url, file_destination)
+            target_date += relativedelta(months=3)
 
     for filename in historic_path.iterdir():
         if filename.is_file() and filename.suffix == ".xls":

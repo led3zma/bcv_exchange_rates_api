@@ -1,3 +1,4 @@
+from datetime import date
 from functools import lru_cache
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -13,6 +14,7 @@ class Settings(BaseSettings):
         "https://www.bcv.org.ve/sites/default/files/EstadisticasGeneral/"
     )
     historic_base_file_format: str = "2_1_{date}_smc.xls"
+    historic_download_from_date: date | None = None
 
 
 @lru_cache
