@@ -114,6 +114,13 @@ def main():
                     insert_rates,
                 )
                 conn.commit()
+            if not settings.historic_preserve_files:
+                try:
+                    filename.unlink()
+                except FileNotFoundError:
+                    print(
+                        f"{filename} could not be deleted. It may have already been deleted"
+                    )
 
 
 if __name__ == "__main__":
