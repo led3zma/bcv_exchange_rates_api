@@ -41,6 +41,17 @@ def get_quarter_format(target: datetime | date) -> str:
     return year
 
 
+def get_extra_suffix(quarter_date: str) -> str:
+    """Covers some edge cases where some download URLs for the
+    actual and complete historic files are different, i.e. for the 2c23 file
+    the data is incomplete if you download it as is with the normal URL unless
+    you pass a suffix that is defined in the actual download URL from the page
+    """
+
+    known_cases = {"2c23": "_60", "2a21": "_58"}
+    return known_cases.get(quarter_date, "")
+
+
 def download_files(file: str, url: str, dest: pathlib.Path):
     try:
         print(f"Attempting to download {file} at {url}")
@@ -78,8 +89,9 @@ def main():
             else date.today()
         )
         while target_date <= date.today():
-            target_filename = settings.historic_base_file_format.format(
-                date=get_quarter_format(target_date)
+            quarter_date = get_quarter_format(target_date)
+            target_filename = settings.historic_.format(
+                date=quarter_date, extra_suffix=get_extra_suffix(quarter_date)
             )
             target_file_url = f"{settings.historic_download_url}{target_filename}"
             file_destination = historic_path.joinpath(target_filename)
