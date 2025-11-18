@@ -1,14 +1,17 @@
 import os
 import pathlib
+import time
 import httpx
 import pandas as pd
 
 from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
-from sqlalchemy import text
+from sqlalchemy import insert, text
+from sqlalchemy.orm import Session
 
 from app.core.db import engine
 from app.core.config import get_settings
+from app.models import Rate
 
 settings = get_settings()
 
@@ -116,14 +119,18 @@ def main():
                 rate = df.loc["USD"].iloc[0]
                 insert_rates.append({"value_date": value_date, "rate": rate})
 
-            with engine.connect() as conn:
-                conn.execute(
-                    text(
-                        """INSERT OR IGNORE INTO rate (value_date,rate) VALUES (:date,:value)"""
-                    ),
-                    insert_rates,
-                )
-                conn.commit()
+            try:
+                with engine.connect() as conn:
+                    conn.execute(
+                        text(
+                            """INSERT OR IGNORE INTO rate (value_date,rate) VALUES (:value_date,:rate)"""
+                        ),
+                        insert_rates,
+                    )
+                    conn.commit()
+            except Exception as e:
+                print(f"Error when inserting: {e}")
+
             if not settings.historic_preserve_files:
                 try:
                     filename.unlink()
