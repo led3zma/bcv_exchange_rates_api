@@ -1,6 +1,4 @@
-import os
 import pathlib
-import time
 import httpx
 import pandas as pd
 
@@ -9,7 +7,7 @@ from dateutil.relativedelta import relativedelta
 from sqlalchemy import insert, text
 from sqlalchemy.orm import Session
 
-from app.core.db import engine
+from app.core.db import Base, engine
 from app.core.config import get_settings
 from app.models import Rate
 
@@ -72,17 +70,7 @@ def download_files(file: str, url: str, dest: pathlib.Path):
 
 
 def main():
-    with engine.connect() as conn:
-        conn.execute(
-            text(
-                """CREATE TABLE IF NOT EXISTS rate (
-                 id INTEGER PRIMARY KEY,
-                 value_date DATE NOT NULL UNIQUE,
-                 rate FLOAT NOT NULL
-                 )"""
-            )
-        )
-        conn.commit()
+    Base.metadata.create_all(engine)
 
     historic_path = pathlib.Path(settings.historic_path)
     if settings.historic_file_download:
@@ -120,14 +108,10 @@ def main():
                 insert_rates.append({"value_date": value_date, "rate": rate})
 
             try:
-                with engine.connect() as conn:
-                    conn.execute(
-                        text(
-                            """INSERT OR IGNORE INTO rate (value_date,rate) VALUES (:value_date,:rate)"""
-                        ),
-                        insert_rates,
-                    )
-                    conn.commit()
+                with Session(engine) as session:
+                    # Should change the `prefix_with` with something more generic in a future
+                    session.execute(insert(Rate).prefix_with("OR IGNORE"), insert_rates)
+                    session.commit()
             except Exception as e:
                 print(f"Error when inserting: {e}")
 
