@@ -8,6 +8,7 @@ class Settings(BaseSettings):
         env_file=".env", env_ignore_empty=True, extra="ignore"
     )
 
+    database_url: str
     historic_path: str = "./input/historic/"
     historic_file_download: bool = False
     historic_preserve_files: bool = False

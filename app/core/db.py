@@ -3,7 +3,11 @@ from fastapi import Depends
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, Session
 
-engine = create_engine(url="sqlite:///database.sqlite3", echo=True)
+from app.core.config import get_settings
+
+settings = get_settings()
+
+engine = create_engine(url=settings.database_url, echo=True)
 
 
 def get_db_session() -> Generator[Session, None, None]:
