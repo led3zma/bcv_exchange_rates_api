@@ -12,7 +12,7 @@ class Rate(Base):
     __tablename__ = "rate"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    value_date: Mapped[date]
+    value_date: Mapped[date] = mapped_column(unique=True)
     rate: Mapped[float] = mapped_column(Float(4))
 
 
