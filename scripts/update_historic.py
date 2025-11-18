@@ -90,7 +90,7 @@ def main():
         )
         while target_date <= date.today():
             quarter_date = get_quarter_format(target_date)
-            target_filename = settings.historic_.format(
+            target_filename = settings.historic_filename_format.format(
                 date=quarter_date, extra_suffix=get_extra_suffix(quarter_date)
             )
             target_file_url = f"{settings.historic_download_url}{target_filename}"
