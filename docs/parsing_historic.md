@@ -1,6 +1,6 @@
-# Parsing historic data from files
+# Parsing historical data from files
 
-At the time of writing this doc (30/09/2025), historic data comes from [this page](https://www.bcv.org.ve/estadisticas/tipo-cambio-de-referencia-smc), where you can download quarterly-divided spreadsheets containing the Foreign Exchange Market System Reference Exchange Rate (SMC: Sistema del Mercado Cambiario) with the following format:
+At the time of writing this doc (30/09/2025), historical data comes from [this page](https://www.bcv.org.ve/estadisticas/tipo-cambio-de-referencia-smc), where you can download quarterly-divided .xls spreadsheets files (more info [here](./downloading_historic_files.md)), which contain the Foreign Exchange Market System Reference Exchange Rate (SMC: Sistema del Mercado Cambiario) with the following format:
 
 ![Sample file with highlighted cells that are of interest](img/sample_file.png)
 
