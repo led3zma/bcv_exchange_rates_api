@@ -22,3 +22,7 @@ class Rate(Base):
 class RatePublic(BaseModel):
     value_date: date
     rate: float
+
+
+class Healthcheck(BaseModel):
+    message: str = "OK"

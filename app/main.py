@@ -6,6 +6,6 @@ app = FastAPI()
 app.include_router(rate_router)
 
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
+@app.get("/health", tags=["Healthcheck"], response_model=Healthcheck, status_code=200)
+async def health() -> Healthcheck:
+    return Healthcheck()
