@@ -5,11 +5,12 @@ from app.core.db import SessionDep
 from app.models import RatePublic
 from app.crud import get_rate_by_date, get_rate_from_to_date
 
-rate_router = APIRouter(prefix="/rate")
+rate_router = APIRouter(prefix="/rate", tags=["Rates"])
 
 
 @rate_router.get("/", response_model=RatePublic)
 async def get_rate(session: SessionDep, value_date: date | None = None) -> RatePublic:
+    """Gets the rate for a given date (defaults today if date is not provided)"""
     if not value_date:
         value_date = date.today()
     rate = get_rate_by_date(session, value_date)
@@ -24,6 +25,7 @@ async def get_rate(session: SessionDep, value_date: date | None = None) -> RateP
 async def get_historical_rate(
     session: SessionDep, from_date: date, to_date: date | None = None
 ) -> list[RatePublic]:
+    """Gets all the available rates from a given date to another date (defaults today if second date is not provided)"""
     if not to_date:
         to_date = date.today()
     rates = get_rate_from_to_date(session, from_date, to_date)
