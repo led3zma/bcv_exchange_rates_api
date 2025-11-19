@@ -1,7 +1,7 @@
 To use `update_historic.py` script, copy a historical file from [BCV page](https://www.bcv.org.ve/estadisticas/tipo-cambio-de-referencia-smc) into `input/historic/` and run the script
 
 ```python
-uv run python -m scripts.update_historic
+uv run python -m app.scripts.update_historic
 ```
 
 Further reading:
