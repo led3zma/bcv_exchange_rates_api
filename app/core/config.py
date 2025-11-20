@@ -10,7 +10,7 @@ class Settings(BaseSettings):
 
     database_url: str
     historic_path: str = "./data/input/historic/"
-    historic_file_download: bool = False
+    historic_file_download: bool = True
     historic_preserve_files: bool = False
     historic_download_url: str = (
         "https://www.bcv.org.ve/sites/default/files/EstadisticasGeneral/"
